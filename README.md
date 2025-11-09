@@ -1,7 +1,7 @@
 # Ex05 Image Carousel
-## Date:13-10-2025
-SATHYANARAYANAN M
-212224040300
+NAME:SATHYANARAYANAN M
+
+REG NO: 212224040300
 
 ## AIM
 To create a Image Carousel using React 
@@ -41,139 +41,152 @@ Use setInterval to call the nextImage() function at regular intervals.
 Clean up the interval when the component unmounts using clearInterval to prevent memory leaks.
 
 ## PROGRAM
-
 ```
-import React from 'react'
-import image1 from './assets/img1.jpg'
-import image2 from './assets/img2.jpg'
-import image3 from './assets/img3.jpg'
+app.js
+import React from 'react';
+import ImageCarousel from './imageCarousel';
 
-
-const Carousel = () => {
-const images = [image1, image2, image3];
-const [currentIndex, setCurrentIndex] = React.useState(0);
-
-const goToPrevious = () => {
-    const isFirstSlide = currentIndex === 0;
-    const newIndex = isFirstSlide ? images.length - 1 : currentIndex - 1;
-    setCurrentIndex(newIndex);
-}
-const goToNext = () => {
-    const isLastSlide = currentIndex === images.length - 1;
-    const newIndex = isLastSlide ? 0 : currentIndex + 1;
-    setCurrentIndex(newIndex);
-}
+function App() {
+  const images = [
+    "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e",
+    "https://images.unsplash.com/photo-1519125323398-675f0ddb6308",
+    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
+  ];
 
   return (
-    <div>
-        <div className="carousel">
-            <h1>Image Carousel</h1>
-            <button onClick={goToPrevious} className="left-arrow">❮</button>
-            <img src={images[currentIndex]} alt={`Slide ${currentIndex}`} className="carousel-image" />
-            <button onClick={goToNext} className="right-arrow">❯</button>
-        </div>
-        <div className="dots">
-            {images.map((_, index) => (
-                <span
-                    key={index}
-                    className={`dot ${index === currentIndex ? 'active' : ''}`}
-                    onClick={() => setCurrentIndex(index)}></span>
-            ))}
-        </div>
+    <div className="App">
+      <ImageCarousel images={images} />
     </div>
-  )
+  );
 }
 
-export default Carousel
+export default App;
+```
+```
+image.js
+import React, { useState, useEffect, useCallback } from 'react';
 
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+const images = [
+  'https://images.unsplash.com/photo-1503023391225,
+  'https://images.unsplash.com/photo-1534528741702,
+  'https://images.unsplash.com/photo-1520813792240'
+];
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+function ImageCarousel() {
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  const nextImage = useCallback(() => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+  }, []);
+
+  const prevImage = () => {
+    setCurrentIndex((prevIndex) =>
+      (prevIndex - 1 + images.length) % images.length
+    );
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextImage();
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [nextImage]);
+
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <h1>React Image Carousel</h1>
+      <img
+        src={images[currentIndex]}
+        alt="carousel"
+        style={{ width: '400px', borderRadius: '10px' }}
+      />
+      <br />
+      <button onClick={prevImage}>Previous</button>
+      <button onClick={nextImage} style={{ marginLeft: '10px' }}>
+        Next
+      </button>
+    </div>
+  );
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+export default ImageCarousel;
+```
+```
+index.css
+/* Reset and Font */
 body {
   margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f8f9fa, #d6e4f0);
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-.carousel-image{
-  width:30%;
-}
-.carousel{
+/* Carousel Container */
+.carousel-container {
+  background-color: #ffffffdd;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+/* Title */
+.carousel-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  color: #2c3e50;
+}
+
+/* Image Styling */
+.carousel-container img {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease;
+}
+
+.carousel-container img:hover {
+  transform: scale(1.03);
+}
+
+/* Button Container */
+.button-container {
+  margin-top: 20px;
+}
+
+/* Navigation Buttons */
+.button-container button {
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  margin: 0 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.button-container button:hover {
+  background-color: #34495e;
+}
 ```
+
 ## OUTPUT
-![alt text](<Screenshot 2025-10-29 094534.png>)
-![alt text](<Screenshot 2025-10-29 094512.png>)
+
+![image](https://github.com/user-attachments/assets/5ea4add6-e61e-4a39-bbc1-7307ff86ab18)
+
+
+![image](https://github.com/user-attachments/assets/83f26410-083d-4745-8934-8ab75d276989)
+
+
+
 
 ## RESULT
 The program for creating Image Carousel using React is executed successfully.
